@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react'
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useCallback } from 'react'
 import { Button, TextField, CircularProgress, IconButton, MenuItem, Card, CardMedia } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { startTransition } from 'react';
-import { get, put, post } from '../../services/http';
-import { FutmanagerTitles, FutmanagerSnackbar} from '../../components';
+import { get, put, post } from '@/data/services/http';
+import { FutmanagerTitles } from '@/ui/components/title';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { VisuallyHiddenInput } from './style';
 
@@ -41,7 +43,7 @@ export default function CadastroUsuarioForm() {
             setCategoria(response.data.data)
             console.log(response.data.data)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -49,51 +51,53 @@ export default function CadastroUsuarioForm() {
         });
     }
 
-    const getPerfils = () => {
+    const getPerfils = useCallback(() => {
         setLoad(true)
         get(`api/perfil?page=${page + 1}&size=${pageSize}`).then((response) => {
             setPerfil(response.data.data)
             console.log(response.data.data)
             setLoad(false)
         }).catch((erro) => {
-          setSnackOptions(prev => ({
-            mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
-            type: "error",
-            open: true
-          }));
-          setLoad(false)
-        });
-      }
-
-    const getUsuario = () => {
-        setLoad(true)
-        get(`api/user/${id}`).then((response) => {
-            setUsuario(response.data)
-            setLoad(false)
-        }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
             }));
             setLoad(false)
         });
-    }
+    }, [page, pageSize])
+
+    const getUsuario = useCallback(
+        () => {
+            setLoad(true)
+            get(`api/user/${id}`).then((response) => {
+                setUsuario(response.data)
+                setLoad(false)
+            }).catch((erro) => {
+                setSnackOptions(_ => ({
+                    mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
+                    type: "error",
+                    open: true
+                }));
+                setLoad(false)
+            });
+        }, [id]
+    )
 
     const editarUsuario = (body) => {
         setLoad(true)
-        put(`api/user/${id}`, body).then((response) => {
-            setSnackOptions(prev => ({ 
-                mensage: "Usuário atualizado com Sucesso", 
-                type: "success", 
-                open: true 
+        put(`api/user/${id}`, body).then((_) => {
+            setSnackOptions(_ => ({
+                mensage: "Usuário atualizado com Sucesso",
+                type: "success",
+                open: true
             }));
             setLoad(false)
             setTimeout(() => {
                 navegacao('/usuarios')
-            }, 3000);                
+            }, 3000);
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -104,14 +108,14 @@ export default function CadastroUsuarioForm() {
 
     const criarUsuario = (body) => {
         setLoad(true)
-        post(`api/user`, body).then((response) => {
-            setSnackOptions(prev => ({ mensage: "Usuário criado com Sucesso", type: "success", open: true }));
+        post(`api/user`, body).then((_) => {
+            setSnackOptions(_ => ({ mensage: "Usuário criado com Sucesso", type: "success", open: true }));
             setLoad(false)
             setTimeout(() => {
                 navegacao('/usuarios')
-            }, 3000); 
+            }, 3000);
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -125,14 +129,14 @@ export default function CadastroUsuarioForm() {
             getUsuario();
         }
         setImage(usuario.caminhoImagem)
-    }, [usuario]);
+    }, [getUsuario, id, usuario]);
 
     useEffect(() => {
         getPerfils();
-    }, [page, pageSize]);
+    }, [getPerfils, page, pageSize]);
 
     useEffect(() => {
-        getCategoria(); 
+        getCategoria();
     }, []);
 
     const salvarUsuario = (event) => {
@@ -169,113 +173,113 @@ export default function CadastroUsuarioForm() {
 
     var titulo = id == 0 ? "Cadastrar Usuário" : "Editar Usuário"
 
-  const handleImagemChange = (event) => {
-    const file = event.target.files[0];
+    const handleImagemChange = (event) => {
+        const file = event.target.files[0];
 
-    setImageName(file ? file.name : '');
-    const reader = new FileReader();
+        setImageName(file ? file.name : '');
+        const reader = new FileReader();
         reader.onloadend = () => {
-        setImage(reader.result);
+            setImage(reader.result);
+        };
+
+        reader.readAsDataURL(file);
     };
 
-    reader.readAsDataURL(file);
-};
-
-const buscarAtletas = (event) => {
-    const cat = event.target;
-    get(`api/atletaSub/${cat.value}?page=${page + 1}&size=${pageSize}`).then((response) => {
-        setAtletaList(response.data.data)
-        console.log(response.data.data)
-      }).catch((erro) => {
-        setSnackOptions(prev => ({
-          mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
-          type: "error",
-          open: true
-        }));
-        setLoad(false)
-      });
-}
+    const buscarAtletas = (event) => {
+        const cat = event.target;
+        get(`api/atletaSub/${cat.value}?page=${page + 1}&size=${pageSize}`).then((response) => {
+            setAtletaList(response.data.data)
+            console.log(response.data.data)
+        }).catch((erro) => {
+            setSnackOptions(_ => ({
+                mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
+                type: "error",
+                open: true
+            }));
+            setLoad(false)
+        });
+    }
 
     const cardImagem = (
         <Card className="border-solid border-blue-fut-paz-900 border-2">
             <CardMedia
-                style={{transition: 'transform 0.3s', height:'150px', width: '150px'}}
+                style={{ transition: 'transform 0.3s', height: '150px', width: '150px' }}
                 component="img"
                 image={image}
                 alt="Imagem do Usuário"
-            />  
+            />
         </Card>
     )
 
-  const selecionarImagem = (
-    <>
-        <TextField
-            className='w-3/5'
-            label="Imagem do Atleta"
-            name="image"
-            value={imageName}
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            InputProps={{
-                style: {
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                },
-                endAdornment: (
-                    <IconButton color='primary' component="label" variant="contained">
-                        <CloudUploadIcon />
-                        <VisuallyHiddenInput key={image} type="file" accept="image/*" onChange={handleImagemChange} />
-                    </IconButton>
-                ),
-            }}
-            InputLabelProps={{
-                shrink: true,
-            }}
-        />
-    </>
-  )
+    const selecionarImagem = (
+        <>
+            <TextField
+                className='w-3/5'
+                label="Imagem do Atleta"
+                name="image"
+                value={imageName}
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                InputProps={{
+                    style: {
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                    },
+                    endAdornment: (
+                        <IconButton color='primary' component="label" variant="contained">
+                            <CloudUploadIcon />
+                            <VisuallyHiddenInput key={image} type="file" accept="image/*" onChange={handleImagemChange} />
+                        </IconButton>
+                    ),
+                }}
+                InputLabelProps={{
+                    shrink: true,
+                }}
+            />
+        </>
+    )
 
-  const atleta = (
-    <>
-    <TextField
-        className='w-3/5'
-         required
-         select
-         name='id'
-         label="Categoria"
-         onChange={buscarAtletas}
-         fullWidth
-         variant="outlined"
-         margin="normal"
-    >
-        {categoria.length > 0 ? categoria.map(cat => (
-           <MenuItem key={cat.id} value={cat.id}>{cat.categoria}</MenuItem>
-        )) : <MenuItem value="">Nenhuma categoria disponível</MenuItem>}
-    </TextField>
+    const atleta = (
+        <>
+            <TextField
+                className='w-3/5'
+                required
+                select
+                name='id'
+                label="Categoria"
+                onChange={buscarAtletas}
+                fullWidth
+                variant="outlined"
+                margin="normal"
+            >
+                {categoria.length > 0 ? categoria.map(cat => (
+                    <MenuItem key={cat.id} value={cat.id}>{cat.categoria}</MenuItem>
+                )) : <MenuItem value="">Nenhuma categoria disponível</MenuItem>}
+            </TextField>
 
-    {atletaList.length > 0 ? 
-        <TextField 
-            className='w-3/5'
-            required
-            select
-            name='atleta_id'
-            label="Atletas"
-            value={usuario.atleta_id}
-            onChange={handleChange}
-            fullWidth
-            variant="outlined"
-            margin="normal"
-        >
-            {atletaList.length > 0 ? atletaList.map(atleta => (
-                <MenuItem key={atleta.id} value={atleta.id}>{atleta.nomeCompleto}</MenuItem>
-            )) : ""}
-        </TextField>
-    : ""
-    }
-    </>
-  )
+            {atletaList.length > 0 ?
+                <TextField
+                    className='w-3/5'
+                    required
+                    select
+                    name='atleta_id'
+                    label="Atletas"
+                    value={usuario.atleta_id}
+                    onChange={handleChange}
+                    fullWidth
+                    variant="outlined"
+                    margin="normal"
+                >
+                    {atletaList.length > 0 ? atletaList.map(atleta => (
+                        <MenuItem key={atleta.id} value={atleta.id}>{atleta.nomeCompleto}</MenuItem>
+                    )) : ""}
+                </TextField>
+                : ""
+            }
+        </>
+    )
 
     return (
         <>
@@ -283,8 +287,8 @@ const buscarAtletas = (event) => {
             {!load && (
                 <form className='w-full flex flex-col items-center' onSubmit={salvarUsuario}>
                     {usuario.perfil_id === 1 || usuario.perfil_id === 3 || usuario.perfil_id === 4 ?
-                    cardImagem
-                    : ""}
+                        cardImagem
+                        : ""}
                     <TextField className='w-3/5'
                         required
                         label="Nome do Usuário"
@@ -306,7 +310,7 @@ const buscarAtletas = (event) => {
                         fullWidth
                         margin="normal"
                     />
-            
+
                     <TextField className='w-3/5'
                         required={id == 0 ? true : false}
                         type="password"
@@ -320,15 +324,15 @@ const buscarAtletas = (event) => {
                     />
 
                     <TextField className='w-3/5'
-                         required
-                         select
-                         name='perfil_id'
-                         value={usuario.perfil_id}
-                         label="Perfil"
-                         onChange={handleChange}
-                         fullWidth
-                         variant="outlined"
-                         margin="normal"
+                        required
+                        select
+                        name='perfil_id'
+                        value={usuario.perfil_id}
+                        label="Perfil"
+                        onChange={handleChange}
+                        fullWidth
+                        variant="outlined"
+                        margin="normal"
                     >
                         {perfil.map(item => (
                             <MenuItem key={item.id} value={item.id}>{item.perfil}</MenuItem>
@@ -342,7 +346,7 @@ const buscarAtletas = (event) => {
                     ) : (
                         ""
                     )}
-                    
+
 
                     <TextField className='w-3/5'
                         required
@@ -358,9 +362,9 @@ const buscarAtletas = (event) => {
                         <MenuItem value={1}>SIM</MenuItem>
                         <MenuItem value={0}>Não</MenuItem>
                     </TextField>
-    
+
                     <div className='mt-6 self-end p-5'>
-                        <Button type="submit" variant="contained" className='bg-green-600 hover:bg-green-700' 
+                        <Button type="submit" variant="contained" className='bg-green-600 hover:bg-green-700'
                             startIcon={<SaveIcon />}>
                             Salvar
                         </Button>

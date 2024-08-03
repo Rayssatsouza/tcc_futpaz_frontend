@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react'
-import { get, del } from "../../services/http"
+import { useState, useEffect, useCallback } from 'react'
+import { get } from "@/data/services/http"
 import { IconButton } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import { useNavigate } from 'react-router-dom';
 import { startTransition } from 'react';
-import { FutmanagerButton, FutmanagerTitles, FutmanagerSnackbar } from "../../components";
 import AddIcon from '@mui/icons-material/Add';
+import { FutmanagerTitles } from '@/ui/components/title';
+import { FutmanagerButton } from '@/ui/components/button';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
 
 export default function Chamada() {
   const [chamadas, setChamadas] = useState({});
@@ -17,24 +19,25 @@ export default function Chamada() {
   const [snackOptions, setSnackOptions] = useState({ mensage: "Unknow", type: "error", open: false });
   const navegacao = useNavigate()
 
-  const getChamadas = () => {
+  const getChamadas = useCallback(() => {
     setLoad(true)
     get(`api/chamada?page=${page + 1}&size=${pageSize}`).then((response) => {
       setChamadas(response.data)
       setLoad(false)
     }).catch((erro) => {
-      setSnackOptions(prev => ({
+      // eslint-disable-next-line no-unused-vars
+      setSnackOptions(_ => ({
         mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
         type: "error",
         open: true
       }));
       setLoad(false)
     });
-  }
+  }, [page, pageSize])
 
   useEffect(() => {
     getChamadas();
-  }, [page, pageSize]);
+  }, [getChamadas, page, pageSize]);
 
   const closeSnackBar = (event, reason) => {
     if (reason === 'clickaway') {
@@ -53,34 +56,37 @@ export default function Chamada() {
     { field: 'id', headerName: 'ID', width: 100 },
     { field: 'dataChamada', headerName: 'Data Chamada', width: 300 },
     { field: 'horaChamada', headerName: 'Horário', width: 200 },
-    { field: 'categoria_id', headerName: 'Categoria', width: 250,
+    {
+      field: 'categoria_id', headerName: 'Categoria', width: 250,
       renderCell: (params) => {
         return params.row.categoria.categoria;
       }
     },
-    { field: 'finalizada', headerName: 'Finalizada', width: 150,
-    renderCell: (params) => {
-      return (
-        params.value ? 'SIM' : 'NÃO'
-      );
-    } },
+    {
+      field: 'finalizada', headerName: 'Finalizada', width: 150,
+      renderCell: (params) => {
+        return (
+          params.value ? 'SIM' : 'NÃO'
+        );
+      }
+    },
     {
       field: 'edit_button', headerName: 'Editar', width: 75,
       renderCell: (params) => {
         if (params.row.finalizada) {
           return ""
         } else {
-        return (
-          <IconButton
-            color="primary"
-            onClick={() => {
-              startTransition(() => {
-                navegacao(`/chamadasForm/${params.row.id}`)
-              });
-            }}>
-            <EditIcon />
-          </IconButton>
-        );
+          return (
+            <IconButton
+              color="primary"
+              onClick={() => {
+                startTransition(() => {
+                  navegacao(`/chamadasForm/${params.row.id}`)
+                });
+              }}>
+              <EditIcon />
+            </IconButton>
+          );
         }
       }
     },
@@ -99,7 +105,7 @@ export default function Chamada() {
               <ContentPasteSearchIcon />
             </IconButton>
           );
-        } 
+        }
         return (
           <IconButton
             color="primary"
@@ -137,7 +143,6 @@ export default function Chamada() {
         onPaginationModelChange={(model) => {
           setPage(model.page)
           setPageSize(model.pageSize)
-          getCenarios
         }}
         paginationModel={{ page: page, pageSize: pageSize }}
         pageSize={pageSize}

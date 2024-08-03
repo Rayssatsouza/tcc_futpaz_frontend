@@ -1,55 +1,24 @@
-import { useState, useEffect } from 'react'
-import {CircularProgress, Typography} from '@mui/material';
+/* eslint-disable no-unused-vars */
+import { useState } from 'react'
+import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { startTransition } from 'react';
-import { get, put, post } from '../../services/http';
-import FutmanagerSnackbar from '../../components/FutmanagerSnackbar';
+import { post } from '@/data/services/http';
 import AtletaForms from "./AtletaForms";
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
 
 export default function CenarioFrm() {
     var { id } = useParams();
     const [load, setLoad] = useState(id == 0 ? false : true);
     const [snackOptions, setSnackOptions] = useState({ mensage: "Unknow", type: "error", open: false });
-    const navegacao = useNavigate();
 
-    const getItem = () => {
-        setLoad(true)
-        get(`api/fluxodecaixa/cenario/${id}`).then((response) => {
-            setAtleta(response.data)
-            setLoad(false)
-        }).catch((erro) => {
-            setSnackOptions(prev => ({
-                mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
-                type: "error",
-                open: true
-            }));
-            setLoad(false)
-        });
-    }
-
-    const updateItem = (body) => {
-        setLoad(true)
-        put(`api/fluxodecaixa/cenario/${id}`, body).then((response) => {
-            setSnackOptions(prev => ({ mensage: "Cenario atualizado com Sucesso", type: "success", open: true }));
-            setLoad(false)
-        }).catch((erro) => {
-            setSnackOptions(prev => ({
-                mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
-                type: "error",
-                open: true
-            }));
-            setLoad(false)
-        });
-    }
 
     const createItem = (body) => {
         setLoad(true)
-        post(`api/atleta`, body).then((response) => {
-            setSnackOptions(prev => ({ mensage: "Atleta criado com Sucesso", type: "success", open: true }));
+        post(`api/atleta`, body).then((_) => {
+            setSnackOptions(_ => ({ mensage: "Atleta criado com Sucesso", type: "success", open: true }));
             setLoad(false)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -72,13 +41,13 @@ export default function CenarioFrm() {
     </Typography>
 
     var form = !load ?
-    <AtletaForms titulo={titulo} id={id} createItem={createItem}/> : <CircularProgress />
+        <AtletaForms titulo={titulo} id={id} createItem={createItem} /> : <CircularProgress />
 
     return (
         <>
             <div className=''>
                 {form}
-            </div>            
+            </div>
             <FutmanagerSnackbar
                 mensage={snackOptions.mensage}
                 type={snackOptions.type}

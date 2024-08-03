@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react'
-import { get, del } from "../../services/http"
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useCallback } from 'react'
+import { get } from "@/data/services/http"
 import { IconButton } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
 import { startTransition } from 'react';
-import { FutmanagerButton, FutmanagerTitles, FutmanagerSnackbar } from "../../components";
 import AddIcon from '@mui/icons-material/Add';
+import { FutmanagerTitles } from '@/ui/components/title';
+import { FutmanagerButton } from '@/ui/components/button';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
 
 export default function CadastroUsuario() {
   const [usuarios, setUsuarios] = useState({});
@@ -16,25 +19,25 @@ export default function CadastroUsuario() {
   const [snackOptions, setSnackOptions] = useState({ mensage: "Unknow", type: "error", open: false });
   const navegacao = useNavigate()
 
-  const getUsuarios = () => {
+  const getUsuarios = useCallback(() => {
     setLoad(true)
     get(`api/user?page=${page + 1}&size=${pageSize}`).then((response) => {
       setUsuarios(response.data)
       console.log(response.data)
       setLoad(false)
     }).catch((erro) => {
-      setSnackOptions(prev => ({
+      setSnackOptions(_ => ({
         mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
         type: "error",
         open: true
       }));
       setLoad(false)
     });
-  }
+  }, [page, pageSize])
 
   useEffect(() => {
     getUsuarios();
-  }, [page, pageSize]);
+  }, [getUsuarios, page, pageSize]);
 
   const closeSnackBar = (event, reason) => {
     if (reason === 'clickaway') {
@@ -53,18 +56,22 @@ export default function CadastroUsuario() {
     { field: 'id', headerName: 'ID', width: 100 },
     { field: 'name', headerName: 'Nome', width: 250 },
     { field: 'login', headerName: 'Login', width: 250 },
-    { field: 'perfil', headerName: 'Perfil', width: 200 ,
-    renderCell: (params) => {
-      return (
-        params.value.perfil
-      );
-    } },
-    { field: 'ativo', headerName: 'Ativo', width: 100,
-    renderCell: (params) => {
-      return (
-        params.value ? 'SIM' : 'NÃO'
-      );
-    } },
+    {
+      field: 'perfil', headerName: 'Perfil', width: 200,
+      renderCell: (params) => {
+        return (
+          params.value.perfil
+        );
+      }
+    },
+    {
+      field: 'ativo', headerName: 'Ativo', width: 100,
+      renderCell: (params) => {
+        return (
+          params.value ? 'SIM' : 'NÃO'
+        );
+      }
+    },
     { field: 'created_at', headerName: 'Data de Criação', width: 175 },
     {
       field: 'edit_button', headerName: 'Editar', width: 75,
@@ -104,7 +111,6 @@ export default function CadastroUsuario() {
         onPaginationModelChange={(model) => {
           setPage(model.page)
           setPageSize(model.pageSize)
-          getCenarios
         }}
         paginationModel={{ page: page, pageSize: pageSize }}
         pageSize={pageSize}

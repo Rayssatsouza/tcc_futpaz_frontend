@@ -1,40 +1,42 @@
-import { useState, useEffect } from 'react'
-import { get, del } from "../../services/http"
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useCallback } from 'react'
+import { get } from "@/data/services/http"
 import { CircularProgress, IconButton } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { startTransition } from 'react';
-import { FutmanagerButton, FutmanagerTitles, FutmanagerSnackbar } from "../../components";
-import {getUser} from './../../services/storage'
+import { getUser } from '@/data/services/storage'
 import EditIcon from '@mui/icons-material/Edit';
+import { FutmanagerTitles } from '@/ui/components/title';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
 
 export default function ResponsavelListView() {
-    const [responsavelList, setResponsavelList] = useState({});
-    const [page, setPage] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
-    const [load, setLoad] = useState(false);
-    const [snackOptions, setSnackOptions] = useState({ mensage: "Unknow", type: "error", open: false });
-    const navegacao = useNavigate()
+  const [responsavelList, setResponsavelList] = useState({});
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [load, setLoad] = useState(false);
+  const [snackOptions, setSnackOptions] = useState({ mensage: "Unknow", type: "error", open: false });
+  const navegacao = useNavigate()
 
-  const getResponsaveis = () => {
+  const getResponsaveis = useCallback(() => {
     setLoad(true)
     get(`api/atletaResponsaveis/${user.atleta_id}`).then((response) => {
       setResponsavelList(response)
       setLoad(false)
     }).catch((erro) => {
-      setSnackOptions(prev => ({
+      setSnackOptions(_ => ({
         mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
         type: "error",
         open: true
       }));
       setLoad(false)
-    });
-  }
+    })
+  }, [user.atleta_id])
 
   useEffect(() => {
     getResponsaveis();
-  }, [page, pageSize]);
+  }, [getResponsaveis, page, pageSize]);
 
   const closeSnackBar = (event, reason) => {
     if (reason === 'clickaway') {
@@ -43,11 +45,6 @@ export default function ResponsavelListView() {
     setSnackOptions(prev => ({ ...prev, open: false }));
   };
 
-  const createItem = () => {
-    startTransition(() => {
-      navegacao(`/responsaveisForm/0/`)
-    });
-  }
 
   const user = getUser();
 
@@ -91,8 +88,8 @@ export default function ResponsavelListView() {
 
   return (
     <>
-    {load && (<CircularProgress />)}
-      <FutmanagerTitles title={"Responsáveis"}/>
+      {load && (<CircularProgress />)}
+      <FutmanagerTitles title={"Responsáveis"} />
       <DataGrid
         className='m-5'
         sx={{ width: '100%' }}
@@ -109,14 +106,13 @@ export default function ResponsavelListView() {
         onPaginationModelChange={(model) => {
           setPage(model.page)
           setPageSize(model.pageSize)
-          getCenarios
         }}
         paginationModel={{ page: page, pageSize: pageSize }}
         pageSize={pageSize}
         rowCount={responsavelList?.pagination?.total_records || 0}
         pageSizeOptions={[10, 25, 50]}
       />
-      
+
       <FutmanagerSnackbar
         mensage={snackOptions.mensage}
         type={snackOptions.type}

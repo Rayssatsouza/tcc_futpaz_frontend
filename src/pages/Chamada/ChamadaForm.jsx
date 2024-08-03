@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react'
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useCallback } from 'react'
 import { Button, TextField, CircularProgress, MenuItem } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { startTransition } from 'react';
-import { get, put, post } from '../../services/http';
-import { FutmanagerTitles, FutmanagerSnackbar} from '../../components';
-import { getUser } from '../../services/storage';
-import { Tune } from '@mui/icons-material';
+import { get, put, post } from '@/data/services/http';
+import { FutmanagerTitles } from '@/ui/components/title';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
+import { getUser } from '@/data/services/storage';
 
 export default function ChamadaForm() {
     var { id } = useParams();
@@ -30,7 +31,7 @@ export default function ChamadaForm() {
         get('api/categoria').then((response) => {
             setCategoria(response.data.data)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -42,7 +43,7 @@ export default function ChamadaForm() {
         get('api/chamadaTipo').then((response) => {
             setTipoChamada(response.data.data)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -50,35 +51,35 @@ export default function ChamadaForm() {
         });
     }
 
-    const getChamada = () => {
+    const getChamada = useCallback(() => {
         setLoad(true)
         get(`api/chamada/${id}`).then((response) => {
             setItem(response.data)
             setLoad(false)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
             }));
             setLoad(false)
         });
-    }
+    }, [id])
 
     const editar = (body) => {
         setLoad(true)
         put(`api/chamada/${id}`, body).then((response) => {
-            setSnackOptions(prev => ({ 
-                mensage: "Chamada atualizada com Sucesso", 
-                type: "success", 
-                open: true 
+            setSnackOptions(_ => ({
+                mensage: "Chamada atualizada com Sucesso",
+                type: "success",
+                open: true
             }));
             setLoad(false)
             setTimeout(() => {
-                navegacao('/presencas/'+response.data.id)
-            }, 3000);                
+                navegacao('/presencas/' + response.data.id)
+            }, 3000);
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -90,13 +91,13 @@ export default function ChamadaForm() {
     const criar = (body) => {
         setLoad(true)
         post(`api/chamada`, body).then((response) => {
-            setSnackOptions(prev => ({ mensage: "Chamada criada com Sucesso", type: "success", open: true }));
+            setSnackOptions(_ => ({ mensage: "Chamada criada com Sucesso", type: "success", open: true }));
             setLoad(false)
             setTimeout(() => {
-                navegacao('/presencas/'+response.data.id)
-            }, 3000); 
+                navegacao('/presencas/' + response.data.id)
+            }, 3000);
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -109,11 +110,11 @@ export default function ChamadaForm() {
         if (!item?.id && id != 0) {
             getChamada();
         }
-    }, [item]);
+    }, [getChamada, id, item]);
 
     useEffect(() => {
-        getCategoria();    
-        getTipoChamada(); 
+        getCategoria();
+        getTipoChamada();
     }, []);
 
     const salvar = (event) => {
@@ -217,7 +218,7 @@ export default function ChamadaForm() {
                                 <MenuItem key={cat.id} value={cat.id}>{cat.tipoChamada}</MenuItem>
                             ))}
                         </TextField>
-                
+
                         <TextField className='w-3/12 ml-10'
                             required
                             select
@@ -233,9 +234,9 @@ export default function ChamadaForm() {
                             <MenuItem value={0}>Não</MenuItem>
                         </TextField>
                     </div>
-    
+
                     <div className='flex float-right mt-6 p-5'>
-                        <Button type="submit" variant="contained" className='bg-green-600 hover:bg-green-700' 
+                        <Button type="submit" variant="contained" className='bg-green-600 hover:bg-green-700'
                             startIcon={<SaveIcon />}>
                             Salvar
                         </Button>

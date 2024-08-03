@@ -1,41 +1,42 @@
 import { Routes, Route } from 'react-router-dom';
-import Login from './src/pages/Login';
-import Home from './src/pages/Home';
-import Pages from './src/pages/Pages';
-import Atleta from './src/pages/Atleta/Atleta';
-import CadastroPerfil from './src/pages/CadastroPerfil/CadastroPerfil';
-import CadastroPerfilForm from './src/pages/CadastroPerfil/CadastroPerfilForm';
-import CadastroCategoria from './src/pages/CadastroCategoria/CadastroCategoria';
-import CadastroCategoriaForm from './src/pages/CadastroCategoria/CadastroCategoriaForm';
-import ChamadaTipo from './src/pages/ChamadaTipo/ChamadaTipo';
-import ChamadaTipoForm from './src/pages/ChamadaTipo/ChamadaTipoForm';
-import CadastroAdvertencia from './src/pages/CadastroAdvertencia/CadastroAdvertencia';
-import CadastroAdvertenciaForm from './src/pages/CadastroAdvertencia/CadastroAdvertenciaForm';
-import AtletaMenu from './src/pages/Atleta/AtletaMenu';
-import AtletaList from './src/pages/Atleta/AtletaList';
-import AtletaForm from './src/pages/Atleta/AtletaForm';
-import CadastroUsuario from './src/pages/Usuarios/CadastroUsuario';
-import CadastroUsuarioForm from './src/pages/Usuarios/CadastroUsuarioForm';
-import ResponsavelList from './src/pages/Responsavel/ResponsavelList';
-import ResponsavelForm from './src/pages/Responsavel/ResponsavelForm';
-import Chamada from './src/pages/Chamada/Chamada';
-import ChamadaForm from './src/pages/Chamada/ChamadaForm';
-import Presencas from './src/pages/Presencas/Presencas';
-import PresencasView from './src/pages/Presencas/PresencasView';
-import AtletaView from './src/pages/AtletaView/AtletaView';
-import AtletaViewEdit from './src/pages/AtletaView/AtletaViewEdit';
-import ResponsavelView from './src/pages/ResponsavelView/ResponsavelView';
-import ResponsavelViewEdit from './src/pages/ResponsavelView/ResponsavelViewEdit';
-import ResponsavelListView from './src/pages/ResponsavelView/ResponsavelListView';
-import Frequencia from './src/pages/Frequencia/Frequencia';
-import Advertencias from './src/pages/Advertencias/Advertencias';
+import Login from '@/pages/Login';
+import Home from '@/pages/Home';
+import Atleta from '@/pages/Atleta/Atleta';
+import CadastroPerfil from '@/pages/CadastroPerfil/CadastroPerfil';
+import CadastroPerfilForm from '@/pages/CadastroPerfil/CadastroPerfilForm';
+import CadastroCategoria from '@/pages/CadastroCategoria/CadastroCategoria';
+import CadastroCategoriaForm from '@/pages/CadastroCategoria/CadastroCategoriaForm';
+import ChamadaTipo from '@/pages/ChamadaTipo/ChamadaTipo';
+import ChamadaTipoForm from '@/pages/ChamadaTipo/ChamadaTipoForm';
+import CadastroAdvertencia from '@/pages/CadastroAdvertencia/CadastroAdvertencia';
+import CadastroAdvertenciaForm from '@/pages/CadastroAdvertencia/CadastroAdvertenciaForm';
+import AtletaMenu from '@/pages/Atleta/AtletaMenu';
+import AtletaList from '@/pages/Atleta/AtletaList';
+import AtletaForm from '@/pages/Atleta/AtletaForm';
+import CadastroUsuario from '@/pages/Usuarios/CadastroUsuario';
+import CadastroUsuarioForm from '@/pages/Usuarios/CadastroUsuarioForm';
+import ResponsavelList from '@/pages/Responsavel/ResponsavelList';
+import ResponsavelForm from '@/pages/Responsavel/ResponsavelForm';
+import Chamada from '@/pages/Chamada/Chamada';
+import ChamadaForm from '@/pages/Chamada/ChamadaForm';
+import Presencas from '@/pages/Presencas/Presencas';
+import PresencasView from '@/pages/Presencas/PresencasView';
+import AtletaView from '@/pages/AtletaView/AtletaView';
+import AtletaViewEdit from '@/pages/AtletaView/AtletaViewEdit';
+import ResponsavelView from '@/pages/ResponsavelView/ResponsavelView';
+import ResponsavelViewEdit from '@/pages/ResponsavelView/ResponsavelViewEdit';
+import ResponsavelListView from '@/pages/ResponsavelView/ResponsavelListView';
+import Frequencia from '@/pages/Frequencia/Frequencia';
+import Advertencias from '@/pages/Advertencias/Advertencias';
+import Ajuda from '@/pages/Ajuda/index';
+import MainPages from '@/ui/partials/mainPages';
 
 export default function MyRoute(){
     return(
         <Routes>
             <Route path="/" element={<Login />}>
             </Route>
-            <Route Component={Pages}>
+            <Route Component={MainPages}>
                 <Route path="/home" Component={Home} />
                 <Route path="/cadastroPerfil" Component={CadastroPerfil} />
                 <Route path="/cadastroPerfilForm/:id" Component={CadastroPerfilForm} />
@@ -64,6 +65,7 @@ export default function MyRoute(){
                 <Route path="/responsavelviewedit/:id" Component={ResponsavelViewEdit} />
                 <Route path="/frequencia/:id" Component={Frequencia} />
                 <Route path="/advertencias/:id" Component={Advertencias} />
+                <Route path="/ajuda" Component={Ajuda} />
             </Route>
         </Routes>
     )

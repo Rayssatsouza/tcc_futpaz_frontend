@@ -1,9 +1,10 @@
-import { useState, useEffect, startTransition } from 'react'
-import { CircularProgress, Checkbox, Button } from '@mui/material';
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, startTransition, useCallback } from 'react'
+import { CircularProgress, Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { get} from '../../services/http';
-import { FutmanagerSnackbar} from '../../components';
+import { get } from '@/data/services/http';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
 import { DataGrid } from '@mui/x-data-grid';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
@@ -17,34 +18,34 @@ export default function PresencasView() {
     const [snackOptions, setSnackOptions] = useState({ mensage: "Unknow", type: "error", open: false });
     const navegacao = useNavigate();
 
-    const getChamadaAtletas = () => {
+    const getChamadaAtletas = useCallback(() => {
         get(`api/presencasAtletasView/${id}`).then((response) => {
             setAtletaList(response.data)
             console.log("response", response.data)
             console.log("atleta", atletaList)
             setLoad(false)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
             }));
         });
-    }
+    }, [atletaList, id])
 
-    const getChamada = () => {
+    const getChamada = useCallback(() => {
         get(`api/presenca/${id}`).then((response) => {
             setChamada(response.data)
             console.log(response.data)
             setLoad(false)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
             }));
         });
-    }
+    }, [id])
 
     const voltarPagina = () => {
         startTransition(() => {
@@ -54,9 +55,9 @@ export default function PresencasView() {
 
 
     useEffect(() => {
-        getChamadaAtletas();    
-        getChamada(); 
-    }, []);
+        getChamadaAtletas();
+        getChamada();
+    }, [getChamada, getChamadaAtletas]);
 
     const closeSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
@@ -65,17 +66,18 @@ export default function PresencasView() {
         setSnackOptions(prev => ({ ...prev, open: false }));
     };
 
-    var titulo = chamada.categoria ? chamada.categoria.categoria  : ""
+    var titulo = chamada.categoria ? chamada.categoria.categoria : ""
 
     const columns = [
         { field: 'numeroUniforme', headerName: 'Número', width: 200 },
         { field: 'nomeCompleto', headerName: 'Nome', width: 600 },
         { field: 'posicao', headerName: 'Posição', width: 200 },
-        { field: 'checkbox', headerName: 'Presenças',
+        {
+            field: 'checkbox', headerName: 'Presenças',
             renderCell: (params) => (
-              params.row.presente == 0 ? 
-              <CloseIcon sx={{color: 'red'}}/>
-              : <CheckIcon sx={{color: 'green'}}/>
+                params.row.presente == 0 ?
+                    <CloseIcon sx={{ color: 'red' }} />
+                    : <CheckIcon sx={{ color: 'green' }} />
             ),
         },
     ];
@@ -99,10 +101,10 @@ export default function PresencasView() {
                 </div>
 
                 <div className='flex float-right p-5'>
-                    <Button 
-                        onClick={()=> {voltarPagina()}}
-                        variant="contained" 
-                        className='bg-blue-fut-paz hover:bg-blue-fut-paz-900' 
+                    <Button
+                        onClick={() => { voltarPagina() }}
+                        variant="contained"
+                        className='bg-blue-fut-paz hover:bg-blue-fut-paz-900'
                         startIcon={<ReplyIcon />}>
                         Voltar
                     </Button>

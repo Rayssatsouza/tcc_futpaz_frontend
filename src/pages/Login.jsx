@@ -1,5 +1,5 @@
-import LoginPage from "../components/LoginPage";
-import { BackgroundSoccer, BlackBackground } from "../styles/Styles";
+import LoginPage from "@/ui/components/LoginPage";
+import { BackgroundSoccer, BlackBackground } from "@/ui/styles/Styles";
 
 
 export default function Login(){

@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react'
-import { get, del } from "../../services/http"
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useCallback } from 'react'
+import { get, del } from "@/data/services/http"
 import { IconButton } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import { startTransition } from 'react';
-import { FutmanagerButton, FutmanagerTitles, FutmanagerSnackbar } from "../../components";
 import AddIcon from '@mui/icons-material/Add';
+import { FutmanagerTitles } from '@/ui/components/title';
+import { FutmanagerButton } from '@/ui/components/button';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
 
 export default function CadastroCategoria() {
   const [perfilList, setPerfilList] = useState({});
@@ -17,29 +20,30 @@ export default function CadastroCategoria() {
   const [snackOptions, setSnackOptions] = useState({ mensage: "Unknow", type: "error", open: false });
   const navegacao = useNavigate()
 
-  const getCategorias = () => {
+  const getCategorias = useCallback(() => {
     setLoad(true)
     get(`api/categoria?page=${page + 1}&size=${pageSize}`).then((response) => {
       setPerfilList(response.data)
       setLoad(false)
     }).catch((erro) => {
-      setSnackOptions(prev => ({
+      setSnackOptions(_ => ({
         mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
         type: "error",
         open: true
       }));
       setLoad(false)
     });
-  }
+  }, [page, pageSize]
+  )
 
   const deletarCategoria = (id) => {
     setLoad(true)
-    del(`api/categoria/${id}`).then((response) => {
+    del(`api/categoria/${id}`).then((_) => {
       setLoad(false)
-      setSnackOptions(prev => ({ mensage: "Categoria deletada com Sucesso", type: "success", open: true }));
+      setSnackOptions(_ => ({ mensage: "Categoria deletada com Sucesso", type: "success", open: true }));
       getCategorias()
     }).catch((erro) => {
-      setSnackOptions(prev => ({
+      setSnackOptions(_ => ({
         mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
         type: "error",
         open: true
@@ -50,7 +54,7 @@ export default function CadastroCategoria() {
 
   useEffect(() => {
     getCategorias();
-  }, [page, pageSize]);
+  }, [getCategorias, page, pageSize]);
 
   const closeSnackBar = (event, reason) => {
     if (reason === 'clickaway') {
@@ -66,22 +70,26 @@ export default function CadastroCategoria() {
   }
 
   const columns = [
-    { field: 'caminhoImagem', headerName: 'Foto', width: 250,
-    renderCell: (params) => {
-      return (
-        <img 
-        src={params.row.caminhoImagem} 
-        className='w-5/6'
-        />
-      );
-    } },
+    {
+      field: 'caminhoImagem', headerName: 'Foto', width: 250,
+      renderCell: (params) => {
+        return (
+          <img
+            src={params.row.caminhoImagem}
+            className='w-5/6'
+          />
+        );
+      }
+    },
     { field: 'categoria', headerName: 'Categoria', width: 250 },
-    { field: 'ativo', headerName: 'Ativo', width: 100,
-    renderCell: (params) => {
-      return (
-        params.value ? 'SIM' : 'NÃO'
-      );
-    } },
+    {
+      field: 'ativo', headerName: 'Ativo', width: 100,
+      renderCell: (params) => {
+        return (
+          params.value ? 'SIM' : 'NÃO'
+        );
+      }
+    },
     { field: 'created_at', headerName: 'Data de Criação', width: 200 },
     { field: 'updated_at', headerName: 'Data de Atualização', width: 200 },
     {
@@ -128,7 +136,7 @@ export default function CadastroCategoria() {
         loading={load}
         rows={perfilList?.data || []}
         getRowId={(row) => row.id}
-        getRowHeight={(params) => 150}
+        getRowHeight={(_) => 150}
         columns={columns}
         initialState={{
           pagination: {
@@ -138,7 +146,6 @@ export default function CadastroCategoria() {
         onPaginationModelChange={(model) => {
           setPage(model.page)
           setPageSize(model.pageSize)
-          getCenarios
         }}
         paginationModel={{ page: page, pageSize: pageSize }}
         pageSize={pageSize}

@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react'
-import { get, del } from "../../services/http"
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useCallback } from 'react'
+import { get, del } from "@/data/services/http"
 import { IconButton } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import { startTransition } from 'react';
-import { FutmanagerButton, FutmanagerTitles, FutmanagerSnackbar } from "../../components";
 import AddIcon from '@mui/icons-material/Add';
+import { FutmanagerTitles } from '@/ui/components/title';
+import { FutmanagerButton } from '@/ui/components/button';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
 
 export default function CadastroAdvertencia() {
   const [advertenciaList, setAdvertenciaList] = useState({});
@@ -17,29 +20,29 @@ export default function CadastroAdvertencia() {
   const [snackOptions, setSnackOptions] = useState({ mensage: "Unknow", type: "error", open: false });
   const navegacao = useNavigate()
 
-  const getAdvertencias = () => {
+  const getAdvertencias = useCallback(() => {
     setLoad(true)
     get(`api/advertenciaTipo?page=${page + 1}&size=${pageSize}`).then((response) => {
       setAdvertenciaList(response.data)
       setLoad(false)
     }).catch((erro) => {
-      setSnackOptions(prev => ({
+      setSnackOptions(_ => ({
         mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
         type: "error",
         open: true
       }));
       setLoad(false)
     });
-  }
+  }, [page, pageSize])
 
   const deletarAdvertencia = (id) => {
     setLoad(true)
-    del(`api/advertenciaTipo/${id}`).then((response) => {
+    del(`api/advertenciaTipo/${id}`).then((_) => {
       setLoad(false)
-      setSnackOptions(prev => ({ mensage: "Tipo de Advertência deletado com Sucesso", type: "success", open: true }));
+      setSnackOptions(_ => ({ mensage: "Tipo de Advertência deletado com Sucesso", type: "success", open: true }));
       getAdvertencias()
     }).catch((erro) => {
-      setSnackOptions(prev => ({
+      setSnackOptions(_ => ({
         mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
         type: "error",
         open: true
@@ -50,7 +53,7 @@ export default function CadastroAdvertencia() {
 
   useEffect(() => {
     getAdvertencias();
-  }, [page, pageSize]);
+  }, [getAdvertencias, page, pageSize]);
 
   const closeSnackBar = (event, reason) => {
     if (reason === 'clickaway') {
@@ -67,13 +70,15 @@ export default function CadastroAdvertencia() {
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'tipoAdvertencia', headerName: 'Tipo de Advertência', width: 300},
-    { field: 'ativo', headerName: 'Ativo', width: 200,
-    renderCell: (params) => {
-      return (
-        params.value ? 'SIM' : 'NÃO'
-      );
-    } },
+    { field: 'tipoAdvertencia', headerName: 'Tipo de Advertência', width: 300 },
+    {
+      field: 'ativo', headerName: 'Ativo', width: 200,
+      renderCell: (params) => {
+        return (
+          params.value ? 'SIM' : 'NÃO'
+        );
+      }
+    },
     { field: 'created_at', headerName: 'Data de Criação', width: 200 },
     { field: 'updated_at', headerName: 'Data de Atualização', width: 200 },
     {
@@ -128,7 +133,6 @@ export default function CadastroAdvertencia() {
         onPaginationModelChange={(model) => {
           setPage(model.page)
           setPageSize(model.pageSize)
-          getCenarios
         }}
         paginationModel={{ page: page, pageSize: pageSize }}
         pageSize={pageSize}

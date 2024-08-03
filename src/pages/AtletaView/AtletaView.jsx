@@ -1,15 +1,15 @@
-import { useState, useEffect, startTransition } from 'react'
-import { Button, TextField, CircularProgress, MenuItem, Card, CardMedia } from '@mui/material';
-import SaveIcon from '@mui/icons-material/Save';
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, startTransition, useCallback } from 'react'
+import { TextField, CircularProgress, MenuItem, Card, CardMedia } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import EditIcon from '@mui/icons-material/Edit';
-import { get, put } from '../../services/http';
-import { FutmanagerTitles, FutmanagerSnackbar} from '../../components';
+import { get } from '@/data/services/http';
+import { FutmanagerTitles } from '@/ui/components/title';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
 
 export default function AtletaView() {
     var { id } = useParams();
     const [atleta, setAtleta] = useState({
-        nomeCompleto: "", 
+        nomeCompleto: "",
         apelido: "",
         categoria_id: "",
         dataNascimento: "",
@@ -35,7 +35,7 @@ export default function AtletaView() {
         get('api/categoria').then((response) => {
             setCategoria(response.data.data)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -43,31 +43,31 @@ export default function AtletaView() {
         });
     }
 
-    const getAtleta = () => {
+    const getAtleta = useCallback(() => {
         setLoad(true)
         get(`api/atleta/${id}`).then((response) => {
             setAtleta(response.data)
             console.log(response.data)
             setLoad(false)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
             }));
         });
-    }
+    }, [id])
 
     useEffect(() => {
         if (!atleta?.id && id != 0) {
             getAtleta();
-        } 
+        }
         setImage(atleta.caminhoImagem)
-        
-    }, [atleta]);
+
+    }, [atleta, getAtleta, id]);
 
     useEffect(() => {
-        getCategoria();     
+        getCategoria();
     }, []);
 
     const closeSnackBar = (event, reason) => {
@@ -88,58 +88,58 @@ export default function AtletaView() {
 
     return (
         <>
-            <FutmanagerTitles title={titulo} edit={editarAtleta} titleEdit={edit}/>
+            <FutmanagerTitles title={titulo} edit={editarAtleta} titleEdit={edit} />
             {!load && (
                 <form>
                     <div className='w-full flex flex-row items-start ml-10 mb-1'>
                         <Card className="border-solid border-blue-fut-paz-900 border-2 mt-5 mr-4">
                             <CardMedia
-                                style={{transition: 'transform 0.3s', height:'200px', width: '200px'}}
+                                style={{ transition: 'transform 0.3s', height: '200px', width: '200px' }}
                                 component="img"
                                 image={image}
                                 alt="Imagem do Atleta"
-                            />  
+                            />
                         </Card>
                     </div>
                     <div className='w-full flex flex-row items-start ml-10 mb-1'>
-                    <TextField className='w-5/12 mt-5 mr-2'
-                        required
-                        label="Nome"
-                        name="nomeCompleto"
-                        value={atleta.nomeCompleto}
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        InputProps={{
-                            readOnly: true,
-                          }}
-                    />
-            
-                    <TextField className='w-3/12 mt-5 mr-2'
-                         label="Apelido"
-                         name="apelido"
-                         value={atleta.apelido}
-                         variant="outlined"
-                         fullWidth
-                         margin="normal"
-                    />
-                    <TextField className='w-3/12 mt-5 mr-2'
-                         required
-                         select
-                         name='categoria_id'
-                         value={atleta.categoria_id}
-                         label="Categoria"
-                         fullWidth
-                         variant="outlined"
-                         margin="normal"
-                         InputProps={{
-                            readOnly: true,
-                          }}
-                    >
-                         {categoria.map(cat => (
-                            <MenuItem key={cat.id} value={cat.id}>{cat.categoria}</MenuItem>
-                        ))}
-                    </TextField>
+                        <TextField className='w-5/12 mt-5 mr-2'
+                            required
+                            label="Nome"
+                            name="nomeCompleto"
+                            value={atleta.nomeCompleto}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+
+                        <TextField className='w-3/12 mt-5 mr-2'
+                            label="Apelido"
+                            name="apelido"
+                            value={atleta.apelido}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField className='w-3/12 mt-5 mr-2'
+                            required
+                            select
+                            name='categoria_id'
+                            value={atleta.categoria_id}
+                            label="Categoria"
+                            fullWidth
+                            variant="outlined"
+                            margin="normal"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        >
+                            {categoria.map(cat => (
+                                <MenuItem key={cat.id} value={cat.id}>{cat.categoria}</MenuItem>
+                            ))}
+                        </TextField>
                     </div>
 
                     <div className='w-full flex flex-row items-start ml-10 mb-1'>
@@ -157,152 +157,152 @@ export default function AtletaView() {
                             }}
                             InputProps={{
                                 readOnly: true,
-                              }}
+                            }}
                         />
 
-                    <TextField className='w-2/12 mt-5 mr-1'
-                        required
-                        label="Idade"
-                        name="idade"
-                        value={atleta.idade}
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        InputProps={{
-                            readOnly: true,
-                          }}
-                    />
+                        <TextField className='w-2/12 mt-5 mr-1'
+                            required
+                            label="Idade"
+                            name="idade"
+                            value={atleta.idade}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
 
-                    <TextField className='w-3/12 mt-5 mr-2'
-                        label="CPF"
-                        name="cpf"
-                        value={atleta.cpf}                       
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                    />
+                        <TextField className='w-3/12 mt-5 mr-2'
+                            label="CPF"
+                            name="cpf"
+                            value={atleta.cpf}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                        />
 
-                    <TextField className='w-3/12 mt-5 mr-2'
-                        label="RG"
-                        name="rg"
-                        value={atleta.rg}
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                    />
+                        <TextField className='w-3/12 mt-5 mr-2'
+                            label="RG"
+                            name="rg"
+                            value={atleta.rg}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                        />
 
                     </div>
 
                     <div className='w-full flex flex-row items-start ml-10 mb-2'>
-                    
-                    <TextField className='w-3/12 mt-5 mr-1'
-                        required
-                        select
-                        name='genero'
-                        value={atleta.genero}
-                        label="Gênero"
-                        fullWidth
-                        variant="outlined"
-                        margin="normal"
-                        InputProps={{
-                            readOnly: true,
-                          }}
-                    >
-                        <MenuItem value={"Feminino"}>Feminino</MenuItem>
-                        <MenuItem value={"Masculino"}>Masculino</MenuItem>
-                    </TextField>
 
-                    <TextField className='w-2/12 mt-5 mr-1'
-                        required
-                        select
-                        label="Posição"
-                        name="posicao"
-                        value={atleta.posicao}
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        InputProps={{
-                            readOnly: true,
-                          }}
-                    >
-                        <MenuItem value={"GOL"}>Goleiro</MenuItem>
-                        <MenuItem value={"ZAG"}>Zagueiro</MenuItem>
-                        <MenuItem value={"LAT"}>Lateral</MenuItem>
-                        <MenuItem value={"MC"}>Meio-Campo</MenuItem>
-                        <MenuItem value={"ATA"}>Atacante</MenuItem>
-                    </TextField>
+                        <TextField className='w-3/12 mt-5 mr-1'
+                            required
+                            select
+                            name='genero'
+                            value={atleta.genero}
+                            label="Gênero"
+                            fullWidth
+                            variant="outlined"
+                            margin="normal"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        >
+                            <MenuItem value={"Feminino"}>Feminino</MenuItem>
+                            <MenuItem value={"Masculino"}>Masculino</MenuItem>
+                        </TextField>
 
-                    <TextField className='w-3/12 mt-5 mr-2'
-                        label="Peso"
-                        name="peso"
-                        value={atleta.peso}                        
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                    />
+                        <TextField className='w-2/12 mt-5 mr-1'
+                            required
+                            select
+                            label="Posição"
+                            name="posicao"
+                            value={atleta.posicao}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        >
+                            <MenuItem value={"GOL"}>Goleiro</MenuItem>
+                            <MenuItem value={"ZAG"}>Zagueiro</MenuItem>
+                            <MenuItem value={"LAT"}>Lateral</MenuItem>
+                            <MenuItem value={"MC"}>Meio-Campo</MenuItem>
+                            <MenuItem value={"ATA"}>Atacante</MenuItem>
+                        </TextField>
 
-                    <TextField className='w-3/12 mt-5 mr-2'
-                        label="Altura"
-                        name="altura"
-                        value={atleta.altura}                        
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                    />
+                        <TextField className='w-3/12 mt-5 mr-2'
+                            label="Peso"
+                            name="peso"
+                            value={atleta.peso}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                        />
 
-                   
+                        <TextField className='w-3/12 mt-5 mr-2'
+                            label="Altura"
+                            name="altura"
+                            value={atleta.altura}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                        />
+
+
                     </div>
 
                     <FutmanagerTitles title={"Informações do Uniforme"} />
 
                     <div className='w-full flex flex-row items-start ml-10 mb-2'>
-                    <TextField className='w-5/12 mt-5 mr-4'
-                        required
-                        label="Nome da Camiseta"
-                        name="nomeUniforme"
-                        value={atleta.nomeUniforme}                        
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        InputProps={{
-                            readOnly: true,
-                          }}
-                    />
+                        <TextField className='w-5/12 mt-5 mr-4'
+                            required
+                            label="Nome da Camiseta"
+                            name="nomeUniforme"
+                            value={atleta.nomeUniforme}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
 
-                    <TextField className='w-6/12 mt-5 mr-2'
-                        required
-                        label="Tamanho da Camiseta"
-                        name="tamanhoUniforme"
-                        value={atleta.tamanhoUniforme}                        
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                    />
+                        <TextField className='w-6/12 mt-5 mr-2'
+                            required
+                            label="Tamanho da Camiseta"
+                            name="tamanhoUniforme"
+                            value={atleta.tamanhoUniforme}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                        />
                     </div>
 
                     <div className='w-full flex flex-row items-start ml-10 mb-2'>
-                    <TextField className='w-5/12 mt-5 mr-4'
-                        required
-                        label="Número da Camiseta"
-                        name="numeroUniforme"
-                        value={atleta.numeroUniforme}                        
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        InputProps={{
-                            readOnly: true,
-                          }}
-                    />
+                        <TextField className='w-5/12 mt-5 mr-4'
+                            required
+                            label="Número da Camiseta"
+                            name="numeroUniforme"
+                            value={atleta.numeroUniforme}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
 
-                    <TextField className='w-6/12 mt-5 mr-2'
-                        required
-                        label="Número do Calçado"
-                        name="numeroCalcado"
-                        value={atleta.numeroCalcado}                        
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                    />
+                        <TextField className='w-6/12 mt-5 mr-2'
+                            required
+                            label="Número do Calçado"
+                            name="numeroCalcado"
+                            value={atleta.numeroCalcado}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                        />
                     </div>
                 </form>
             )}
@@ -311,7 +311,7 @@ export default function AtletaView() {
                 mensage={snackOptions.mensage}
                 type={snackOptions.type}
                 open={snackOptions.open}
-                handleClose={closeSnackBar} 
+                handleClose={closeSnackBar}
             />
         </>
     )

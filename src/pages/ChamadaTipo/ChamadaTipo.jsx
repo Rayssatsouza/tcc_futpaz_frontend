@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react'
-import { get, del } from "../../services/http"
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useCallback } from 'react'
+import { get, del } from "@/data/services/http"
 import { IconButton } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import { startTransition } from 'react';
-import { FutmanagerButton, FutmanagerTitles, FutmanagerSnackbar } from "../../components";
 import AddIcon from '@mui/icons-material/Add';
+import { FutmanagerTitles } from '@/ui/components/title';
+import { FutmanagerButton } from '@/ui/components/button';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
 
 export default function ChamadaTipo() {
   const [chamadaList, setChamadaList] = useState({});
@@ -17,29 +20,29 @@ export default function ChamadaTipo() {
   const [snackOptions, setSnackOptions] = useState({ mensage: "Unknow", type: "error", open: false });
   const navegacao = useNavigate()
 
-  const getChamadaTipos = () => {
+  const getChamadaTipos = useCallback(() => {
     setLoad(true)
     get(`api/chamadaTipo?page=${page + 1}&size=${pageSize}`).then((response) => {
       setChamadaList(response.data)
       setLoad(false)
     }).catch((erro) => {
-      setSnackOptions(prev => ({
+      setSnackOptions(_ => ({
         mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
         type: "error",
         open: true
       }));
       setLoad(false)
     });
-  }
+  }, [page, pageSize])
 
   const deletarChamadaTipo = (id) => {
     setLoad(true)
-    del(`api/chamadaTipo/${id}`).then((response) => {
+    del(`api/chamadaTipo/${id}`).then((_) => {
       setLoad(false)
-      setSnackOptions(prev => ({ mensage: "Perfil deletado com Sucesso", type: "success", open: true }));
+      setSnackOptions(_ => ({ mensage: "Perfil deletado com Sucesso", type: "success", open: true }));
       getChamadaTipos()
     }).catch((erro) => {
-      setSnackOptions(prev => ({
+      setSnackOptions(_ => ({
         mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
         type: "error",
         open: true
@@ -50,7 +53,7 @@ export default function ChamadaTipo() {
 
   useEffect(() => {
     getChamadaTipos();
-  }, [page, pageSize]);
+  }, [getChamadaTipos, page, pageSize]);
 
   const closeSnackBar = (event, reason) => {
     if (reason === 'clickaway') {
@@ -68,12 +71,14 @@ export default function ChamadaTipo() {
   const columns = [
     { field: 'id', headerName: 'ID', width: 100 },
     { field: 'tipoChamada', headerName: 'Tipo de Chamada', width: 300 },
-    { field: 'ativo', headerName: 'Ativo', width: 200,
-    renderCell: (params) => {
-      return (
-        params.value ? 'SIM' : 'NÃO'
-      );
-    } },
+    {
+      field: 'ativo', headerName: 'Ativo', width: 200,
+      renderCell: (params) => {
+        return (
+          params.value ? 'SIM' : 'NÃO'
+        );
+      }
+    },
     { field: 'created_at', headerName: 'Data de Criação', width: 200 },
     { field: 'updated_at', headerName: 'Data de Atualização', width: 200 },
     {
@@ -128,7 +133,6 @@ export default function ChamadaTipo() {
         onPaginationModelChange={(model) => {
           setPage(model.page)
           setPageSize(model.pageSize)
-          getCenarios
         }}
         paginationModel={{ page: page, pageSize: pageSize }}
         pageSize={pageSize}
