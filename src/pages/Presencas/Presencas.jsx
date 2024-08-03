@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useCallback } from 'react'
 import { CircularProgress, Checkbox, Button, Dialog, DialogTitle, IconButton, DialogContent, TextField, DialogActions, MenuItem } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { get, post} from '../../services/http';
-import { FutmanagerSnackbar, FutmanagerTitles} from '../../components';
-import { getUser } from '../../services/storage';
+import { get, post } from '@/data/services/http';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
+import { FutmanagerTitles } from '@/ui/components/title';
 import { DataGrid } from '@mui/x-data-grid';
 import CheckIcon from '@mui/icons-material/Check';
 import SaveIcon from '@mui/icons-material/Save';
@@ -13,7 +14,6 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 export default function Presencas() {
     var { id } = useParams();
-    const usuario = getUser();
     const [load, setLoad] = useState(id == 0 ? false : true);
     const [advertencia, setAdvertencia] = useState({
         advertencia_tipo_id: '',
@@ -29,7 +29,7 @@ export default function Presencas() {
     const [open, setOpen] = useState(false);
     const navegacao = useNavigate();
 
-    const getChamada = () => {
+    const getChamada = useCallback(() => {
         get(`api/presenca/${id}`).then((response) => {
             setChamada(response.data)
             console.log(response.data)
@@ -37,40 +37,40 @@ export default function Presencas() {
             setCategoria(response.data.categoria.id)
             getAtletas(response.data.categoria.id)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
             }));
         });
-    }
+    }, [id])
 
     const getAtletas = (id) => {
         setLoad(true)
         get(`api/chamadaSub/${id}`).then((response) => {
-          setAtletaList(response.data)
-          setLoad(false)
+            setAtletaList(response.data)
+            setLoad(false)
         }).catch((erro) => {
-          setSnackOptions(prev => ({
-            mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
-            type: "error",
-            open: true
-          }));
-          setLoad(false)
+            setSnackOptions(_ => ({
+                mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
+                type: "error",
+                open: true
+            }));
+            setLoad(false)
         });
-      }
+    }
 
     const salvarPresencas = (body) => {
         setLoad(true)
         post(`api/presencasAtletas`, body).then((response) => {
-            setSnackOptions(prev => ({ mensage: "Chamada criada com Sucesso", type: "success", open: true }));
+            setSnackOptions(_ => ({ mensage: "Chamada criada com Sucesso", type: "success", open: true }));
             setLoad(false)
             console.log(response.data.message);
             setTimeout(() => {
                 navegacao('/chamadas')
             }, 3000);
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -89,9 +89,9 @@ export default function Presencas() {
     }
 
     useEffect(() => {
-        getChamada(); 
-        getAdvertencias()   
-    }, []);
+        getChamada();
+        getAdvertencias()
+    }, [getChamada]);
 
     const closeSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
@@ -100,40 +100,42 @@ export default function Presencas() {
         setSnackOptions(prev => ({ ...prev, open: false }));
     };
 
-    var titulo = chamada.categoria ? chamada.categoria.categoria  : ""
+    var titulo = chamada.categoria ? chamada.categoria.categoria : ""
 
     const columns = [
         { field: 'numeroUniforme', headerName: 'Número', width: 200 },
         { field: 'nomeCompleto', headerName: 'Nome', width: 500 },
         { field: 'posicao', headerName: 'Posição', width: 175 },
-        { field: 'checkbox', headerName: <CheckIcon sx={{color: 'green'}}/>,
+        {
+            field: 'checkbox', headerName: <CheckIcon sx={{ color: 'green' }} />,
             renderCell: (params) => (
-              <Checkbox
-                checked={atletasSelecionados.includes(params.row.id)}
-                onChange={() => handleCheckboxChange(params.row.id)}
-              />
+                <Checkbox
+                    checked={atletasSelecionados.includes(params.row.id)}
+                    onChange={() => handleCheckboxChange(params.row.id)}
+                />
             ),
         },
-        { field: 'advertencias', headerName: 'Advertência',
+        {
+            field: 'advertencias', headerName: 'Advertência',
             renderCell: (params) => (
                 <IconButton
-                color="primary"
-                onClick={() => {
-                    openDialog(params.row.id)
-                }}>
-                <WarningAmberIcon sx={{color: 'red'}}/>
-              </IconButton>
+                    color="primary"
+                    onClick={() => {
+                        openDialog(params.row.id)
+                    }}>
+                    <WarningAmberIcon sx={{ color: 'red' }} />
+                </IconButton>
             ),
         },
-      ];
+    ];
 
-      const handleCheckboxChange = (id) => {
+    const handleCheckboxChange = (id) => {
         if (atletasSelecionados.includes(id)) {
-          setAtletasSelecionados(atletasSelecionados.filter((atletaId) => atletaId !== id));
+            setAtletasSelecionados(atletasSelecionados.filter((atletaId) => atletaId !== id));
         } else {
-          setAtletasSelecionados([...atletasSelecionados, id]);
+            setAtletasSelecionados([...atletasSelecionados, id]);
         }
-      };
+    };
 
     const handleClose = () => {
         setOpen(false);
@@ -148,18 +150,18 @@ export default function Presencas() {
     const getAdvertencias = () => {
         setLoad(true)
         get(`api/advertenciaTipo`).then((response) => {
-          setAdvertenciaList(response.data.data)
-          console.log(response.data.data)
-          setLoad(false)
+            setAdvertenciaList(response.data.data)
+            console.log(response.data.data)
+            setLoad(false)
         }).catch((erro) => {
-          setSnackOptions(prev => ({
-            mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
-            type: "error",
-            open: true
-          }));
-          setLoad(false)
+            setSnackOptions(_ => ({
+                mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
+                type: "error",
+                open: true
+            }));
+            setLoad(false)
         });
-      }
+    }
 
     const salvarParametros = (event) => {
         const { name, value } = event.target;
@@ -183,12 +185,12 @@ export default function Presencas() {
     const criarAdvertencia = (body) => {
         setLoad(true)
         post(`api/advertencia`, body).then((response) => {
-            setSnackOptions(prev => ({ mensage: "Advertência aplicada com Sucesso", type: "success", open: true }));
+            setSnackOptions(_ => ({ mensage: "Advertência aplicada com Sucesso", type: "success", open: true }));
             setLoad(false)
             console.log(response)
             handleClose()
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -216,10 +218,10 @@ export default function Presencas() {
                 </div>
 
                 <div className='flex float-right p-5'>
-                    <Button 
-                        onClick={()=> {prepararDados()}}
-                        variant="contained" 
-                        className='bg-green-600 hover:bg-green-700' 
+                    <Button
+                        onClick={() => { prepararDados() }}
+                        variant="contained"
+                        className='bg-green-600 hover:bg-green-700'
                         startIcon={<SaveIcon />}>
                         Finalizar Chamada
                     </Button>
@@ -233,8 +235,8 @@ export default function Presencas() {
                 handleClose={closeSnackBar} />
 
             <Dialog open={open} fullWidth>
-                <DialogTitle> 
-                    <FutmanagerTitles title={"Advertências"}/>
+                <DialogTitle>
+                    <FutmanagerTitles title={"Advertências"} />
                     <IconButton
                         aria-label="close"
                         onClick={handleClose}
@@ -244,7 +246,7 @@ export default function Presencas() {
                             top: 8,
                             color: (theme) => theme.palette.grey[500],
                         }}
-                        >
+                    >
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
@@ -280,14 +282,14 @@ export default function Presencas() {
                     </TextField>
 
                     <TextField sx={{ m: 2, width: 500 }}
-                         required
-                         select
-                         name='advertencia_tipo_id'
-                         label="Tipo de Advertência"
-                         fullWidth
-                         onChange={salvarParametros}
-                         variant="outlined"
-                         margin="normal"
+                        required
+                        select
+                        name='advertencia_tipo_id'
+                        label="Tipo de Advertência"
+                        fullWidth
+                        onChange={salvarParametros}
+                        variant="outlined"
+                        margin="normal"
                     >
                         {advertenciaList.length > 0 ? advertenciaList.map(advert => (
                             <MenuItem key={advert.id} value={advert.id}>{advert.tipoAdvertencia}</MenuItem>
@@ -307,10 +309,10 @@ export default function Presencas() {
 
                 </DialogContent>
                 <DialogActions>
-                    <Button 
+                    <Button
                         onClick={salvarInformacoesAdvertencia}
-                        variant="contained" 
-                        className='bg-green-600 hover:bg-green-700' 
+                        variant="contained"
+                        className='bg-green-600 hover:bg-green-700'
                         startIcon={<SaveIcon />}>
                         Salvar
                     </Button>

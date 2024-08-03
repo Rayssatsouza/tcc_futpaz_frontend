@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react'
-import { Button, TextField, CircularProgress, Container, Box, Grid, IconButton, MenuItem } from '@mui/material';
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useCallback } from 'react'
+import { Button, TextField, CircularProgress, MenuItem } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { startTransition } from 'react';
-import { get, put, post } from '../../services/http';
-import { FutmanagerTitles, FutmanagerSnackbar} from '../../components';
+import { get, put, post } from '@/data/services/http';
+import { FutmanagerTitles } from '@/ui/components/title';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar'
 
 export default function CadastroAdvertenciaForm() {
     var { id } = useParams();
@@ -17,35 +19,35 @@ export default function CadastroAdvertenciaForm() {
     const [snackOptions, setSnackOptions] = useState({ mensage: "Unknow", type: "error", open: false });
     const navegacao = useNavigate();
 
-    const getAdvertencia = () => {
+    const getAdvertencia = useCallback(() => {
         setLoad(true)
         get(`api/advertenciaTipo/${id}`).then((response) => {
             setItem(response.data)
             setLoad(false)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
             }));
             setLoad(false)
         });
-    }
+    }, [id])
 
     const editarAdvertencia = (body) => {
         setLoad(true)
-        put(`api/advertenciaTipo/${id}`, body).then((response) => {
-            setSnackOptions(prev => ({ 
-                mensage: "Tipo de Advertência atualizado com Sucesso", 
-                type: "success", 
-                open: true 
+        put(`api/advertenciaTipo/${id}`, body).then((_) => {
+            setSnackOptions(_ => ({
+                mensage: "Tipo de Advertência atualizado com Sucesso",
+                type: "success",
+                open: true
             }));
             setLoad(false)
             setTimeout(() => {
                 navegacao('/cadastroAdvertenciaTipo')
-            }, 3000);                
+            }, 3000);
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -56,14 +58,14 @@ export default function CadastroAdvertenciaForm() {
 
     const criarAdvertencia = (body) => {
         setLoad(true)
-        post(`api/advertenciaTipo`, body).then((response) => {
-            setSnackOptions(prev => ({ mensage: "Tipo de Advertência criado com Sucesso", type: "success", open: true }));
+        post(`api/advertenciaTipo`, body).then((_) => {
+            setSnackOptions(_ => ({ mensage: "Tipo de Advertência criado com Sucesso", type: "success", open: true }));
             setLoad(false)
             setTimeout(() => {
                 navegacao('/cadastroAdvertenciaTipo')
-            }, 3000); 
+            }, 3000);
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -76,7 +78,7 @@ export default function CadastroAdvertenciaForm() {
         if (!item?.id && id != 0) {
             getAdvertencia();
         }
-    }, [item]);
+    }, [getAdvertencia, id, item]);
 
     const salvarAdvertencia = (event) => {
         event.preventDefault();
@@ -125,7 +127,7 @@ export default function CadastroAdvertenciaForm() {
                         fullWidth
                         margin="normal"
                     />
-            
+
                     <TextField className='w-3/5'
                         required
                         select
@@ -140,9 +142,9 @@ export default function CadastroAdvertenciaForm() {
                         <MenuItem value={1}>SIM</MenuItem>
                         <MenuItem value={0}>Não</MenuItem>
                     </TextField>
-    
+
                     <div className='mt-6 self-end p-5'>
-                        <Button type="submit" variant="contained" className='bg-green-600 hover:bg-green-700' 
+                        <Button type="submit" variant="contained" className='bg-green-600 hover:bg-green-700'
                             startIcon={<SaveIcon />}>
                             Salvar
                         </Button>

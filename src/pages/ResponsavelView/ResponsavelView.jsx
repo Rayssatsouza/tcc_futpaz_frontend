@@ -1,15 +1,17 @@
-import { useState, useEffect } from 'react'
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useCallback } from 'react'
 import { TextField, CircularProgress } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { startTransition } from 'react';
-import { get} from '../../services/http';
-import { FutmanagerTitles, FutmanagerSnackbar, FutmanagerButton} from '../../components';
+import { get } from '@/data/services/http';
+import { FutmanagerTitles } from '@/ui/components/title';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
 
 export default function ResponsavelView() {
     var { id } = useParams();
     const [responsavel, setResponsavel] = useState({
-        nomeCompleto: "", 
+        nomeCompleto: "",
         dataNascimento: "",
         cpf: "",
         rg: "",
@@ -19,26 +21,26 @@ export default function ResponsavelView() {
     const [snackOptions, setSnackOptions] = useState({ mensage: "Unknow", type: "error", open: false });
     const navegacao = useNavigate();
 
-    const getResponsavel = () => {
+    const getResponsavel = useCallback(() => {
         setLoad(true)
         get(`api/responsavel/${id}`).then((response) => {
             setResponsavel(response.data)
             console.log(response.data)
             setLoad(false)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
             }));
         });
-    } 
+    }, [id])
 
     useEffect(() => {
         if (!responsavel?.id && id != 0) {
             getResponsavel();
-        } 
-    }, [responsavel]);
+        }
+    }, [getResponsavel, id, responsavel]);
 
     const voltarPagina = () => {
         startTransition(() => {
@@ -73,7 +75,7 @@ export default function ResponsavelView() {
                                 readOnly: true,
                             }}
                         />
-                
+
                         <TextField className='w-3/5'
                             type='date'
                             required
@@ -117,10 +119,10 @@ export default function ResponsavelView() {
                             }}
                         />
                     </div>
-                    
+
                     <div className='flex float-right p-5 mt-5'>
                     </div>
-                    
+
                 </form>
             )}
             {load && (<CircularProgress />)}
@@ -129,7 +131,7 @@ export default function ResponsavelView() {
                 type={snackOptions.type}
                 open={snackOptions.open}
                 handl
-                eClose={closeSnackBar} 
+                eClose={closeSnackBar}
             />
         </>
     )

@@ -1,8 +1,7 @@
-import React from 'react';
 import './style.css';
 import './script';
 
-const MenuAccordion = () => {
+export default function MenuAccordion() {
   return (
     <div className="accordion">
       <div className="accordion-item">
@@ -12,10 +11,10 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Gerencial".<br />
-          2º Passo: Após abrir o menu gerencial, acessar o campo "Perfis".<br />
-          3° Passo: Na tela de "perfis cadastrados", clique no botão "+".<br />
-          4º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão "salvar".
+          1° Passo: No menu lateral, acesse o campo <q>Gerencial</q>.<br />
+          2º Passo: Após abrir o menu gerencial, acessar o campo <q>Perfis</q>.<br />
+          3° Passo: Na tela de <q>perfis cadastrados</q>, clique no botão <q>+</q>.<br />
+          4º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.
         </div>
       </div>
       <div className="accordion-item">
@@ -25,10 +24,10 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Gerencial".<br />
-          2º Passo: Após abrir o menu gerencial, acessar o campo "Categorias".<br />
-          3° Passo: Na tela de "categorias cadastradas", clique no botão "+".<br />
-          4º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão "salvar".
+          1° Passo: No menu lateral, acesse o campo <q>Gerencial</q>.<br />
+          2º Passo: Após abrir o menu gerencial, acessar o campo <q>Categorias</q>.<br />
+          3° Passo: Na tela de <q>categorias cadastradas</q>, clique no botão <q>+</q>.<br />
+          4º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.
         </div>
       </div>
       <div className="accordion-item">
@@ -38,9 +37,9 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Chamadas".<br />
-          2° Passo: Na tela de "Chamadas cadastradas", clique no botão "+".<br />
-          3º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão "salvar".
+          1° Passo: No menu lateral, acesse o campo <q>Chamadas</q>.<br />
+          2° Passo: Na tela de <q>Chamadas cadastradas</q>, clique no botão <q>+</q>.<br />
+          3º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.
         </div>
       </div>
       <div className="accordion-item">
@@ -50,10 +49,10 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Gerencial".<br />
-          2º Passo: Após abrir o menu gerencial, acessar o campo "Usuários".<br />
-          3° Passo: Na tela de "Usuários cadastrados", clique no botão "+".<br />
-          4º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão "salvar".
+          1° Passo: No menu lateral, acesse o campo <q>Gerencial</q>.<br />
+          2º Passo: Após abrir o menu gerencial, acessar o campo <q>Usuários</q>.<br />
+          3° Passo: Na tela de <q>Usuários cadastrados</q>, clique no botão <q>+</q>.<br />
+          4º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.
         </div>
       </div>
       <div className="accordion-item">
@@ -63,10 +62,10 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Gerencial".<br />
-          2º Passo: Após abrir o menu gerencial, acessar o campo "Advertências".<br />
-          3° Passo: Na tela de "Tipos de advertências cadastradas", clique no botão "+".<br />
-          4º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão "salvar".
+          1° Passo: No menu lateral, acesse o campo <q>Gerencial</q>.<br />
+          2º Passo: Após abrir o menu gerencial, acessar o campo <q>Advertências</q>.<br />
+          3° Passo: Na tela de <q>Tipos de advertências cadastradas</q>, clique no botão <q>+</q>.<br />
+          4º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.
         </div>
       </div>
       <div className="accordion-item">
@@ -76,10 +75,10 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Gerencial".<br />
-          2º Passo: Após abrir o menu gerencial, acessar o campo "Chamadas".<br />
-          3° Passo: Na tela de "Tipos de chamadas cadastradas", clique no botão "+".<br />
-          4º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão "salvar".
+          1° Passo: No menu lateral, acesse o campo <q>Gerencial</q>.<br />
+          2º Passo: Após abrir o menu gerencial, acessar o campo <q>Chamadas</q>.<br />
+          3° Passo: Na tela de <q>Tipos de chamadas cadastradas</q>, clique no botão <q>+</q>.<br />
+          4º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.
         </div>
       </div>
       <div className="accordion-item">
@@ -89,10 +88,10 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Atletas".<br />
-          2º Passo: Após abrir o menu "Atletas", escolha a categoria dos atletas.<br />
-          3° Passo: Na tela da categoria selecionada, clique no botão "+".<br />
-          4º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão "salvar".
+          1° Passo: No menu lateral, acesse o campo <q>Atletas</q>.<br />
+          2º Passo: Após abrir o menu <q>Atletas</q>, escolha a categoria dos atletas.<br />
+          3° Passo: Na tela da categoria selecionada, clique no botão <q>+</q>.<br />
+          4º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.
         </div>
       </div>
       <div className="accordion-item">
@@ -102,9 +101,9 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Responsáveis".<br />
-          2° Passo: Na tela de "Responsáveis", clique no botão "+".<br />
-          3º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão "salvar".
+          1° Passo: No menu lateral, acesse o campo <q>Responsáveis</q>.<br />
+          2° Passo: Na tela de <q>Responsáveis</q>, clique no botão <q>+</q>.<br />
+          3º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.
         </div>
       </div>
       <div className="accordion-item">
@@ -114,9 +113,9 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Responsáveis".<br />
-          2° Passo: Na tela de "Responsáveis", na tabela, clique no ícone de lápis para editar os dados do responsável.<br />
-          3º Passo: No formulário de edição do responsável, preencha os campos com as devidas informações, assim, clique no botão "salvar".
+          1° Passo: No menu lateral, acesse o campo <q>Responsáveis</q>.<br />
+          2° Passo: Na tela de <q>Responsáveis</q>, na tabela, clique no ícone de lápis para editar os dados do responsável.<br />
+          3º Passo: No formulário de edição do responsável, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.
         </div>
       </div>
       <div className="accordion-item">
@@ -126,10 +125,10 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Atletas".<br />
-          2° Passo: Na tela de "Atletas", escolha a categoria dos atletas.<br />
+          1° Passo: No menu lateral, acesse o campo <q>Atletas</q>.<br />
+          2° Passo: Na tela de <q>Atletas</q>, escolha a categoria dos atletas.<br />
           3° Passo: Na tela da categoria dos atletas, na tabela, clique no ícone de lápis para editar os dados.<br />
-          4º Passo: No formulário de edição do atleta, preencha os campos com as devidas informações, assim, clique no botão "salvar".
+          4º Passo: No formulário de edição do atleta, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.
         </div>
       </div>
       <div className="accordion-item">
@@ -139,8 +138,8 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Chamadas".<br />
-          2° Passo: Na tela de "Chamadas cadastradas", na tabela, clique no ícone de prancheta para visualizar as chamadas.
+          1° Passo: No menu lateral, acesse o campo <q>Chamadas</q>.<br />
+          2° Passo: Na tela de <q>Chamadas cadastradas</q>, na tabela, clique no ícone de prancheta para visualizar as chamadas.
         </div>
       </div>
       <div className="accordion-item">
@@ -150,10 +149,10 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Chamadas".<br />
-          2° Passo: Na tela de "Chamadas cadastradas", clique no botão "+".<br />
-          3º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão "salvar".<br />
-          4º Passo: Após isso, aparecerá uma lista com os atletas cadastrados, selecione os atletas presentes na chamada, e aperte "Finalizar chamada".
+          1° Passo: No menu lateral, acesse o campo <q>Chamadas</q>.<br />
+          2° Passo: Na tela de <q>Chamadas cadastradas</q>, clique no botão <q>+</q>.<br />
+          3º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.<br />
+          4º Passo: Após isso, aparecerá uma lista com os atletas cadastrados, selecione os atletas presentes na chamada, e aperte <q>Finalizar chamada</q>.
         </div>
       </div>
       <div className="accordion-item">
@@ -163,11 +162,11 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Chamadas".<br />
-          2° Passo: Na tela de "Chamadas cadastradas", clique no botão "+".<br />
-          3º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão "salvar".<br />
-          4º Passo: Após isso, aparecerá uma lista com os atletas cadastrados, selecione o ícone vermelho em formato de triângulo para abrir o formulário de advertência, preencha os devidos campos, e aperte "Salvar".<br />
-          5º Passo: Após isso, finalize apertando "Finalizar chamada".
+          1° Passo: No menu lateral, acesse o campo <q>Chamadas</q>.<br />
+          2° Passo: Na tela de <q>Chamadas cadastradas</q>, clique no botão <q>+</q>.<br />
+          3º Passo: No formulário de cadastro, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.<br />
+          4º Passo: Após isso, aparecerá uma lista com os atletas cadastrados, selecione o ícone vermelho em formato de triângulo para abrir o formulário de advertência, preencha os devidos campos, e aperte <q>Salvar</q>.<br />
+          5º Passo: Após isso, finalize apertando <q>Finalizar chamada</q>.
         </div>
       </div>
       <div className="accordion-item" id="atleta">
@@ -177,14 +176,12 @@ const MenuAccordion = () => {
         <div className="accordion-item-body">
           Na tela inicial, siga os seguintes passos:<br />
           <br />
-          1° Passo: No menu lateral, acesse o campo "Gerencial".<br />
-          2º Passo: Após abrir o menu gerencial, acessar o campo "Usuários".<br />
-          3° Passo: Na tela de "Usuários cadastrados", clique no ícone de lápis na linha do usuário desejado.<br />
-          4º Passo: No formulário de edição, preencha os campos com as devidas informações, assim, clique no botão "salvar".
+          1° Passo: No menu lateral, acesse o campo <q>Gerencial</q>.<br />
+          2º Passo: Após abrir o menu gerencial, acessar o campo <q>Usuários</q>.<br />
+          3° Passo: Na tela de <q>Usuários cadastrados</q>, clique no ícone de lápis na linha do usuário desejado.<br />
+          4º Passo: No formulário de edição, preencha os campos com as devidas informações, assim, clique no botão <q>salvar</q>.
         </div>
       </div>
     </div>
   );
 }
-
-export default MenuAccordion;

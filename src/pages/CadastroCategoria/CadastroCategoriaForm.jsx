@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react'
-import { Button, TextField, CircularProgress, Container, Box, Grid, IconButton, MenuItem, CardMedia, Card } from '@mui/material';
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useCallback } from 'react'
+import { Button, TextField, CircularProgress, IconButton, MenuItem, CardMedia, Card } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { startTransition } from 'react';
-import { get, put, post } from '../../services/http';
-import { FutmanagerTitles, FutmanagerSnackbar} from '../../components';
+import { get, put, post } from '@/data/services/http';
+import { FutmanagerTitles } from '@/ui/components/title';
+import { FutmanagerSnackbar } from '@/ui/components/snackbar';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { VisuallyHiddenInput } from './style';
 
@@ -21,35 +23,35 @@ export default function CadastroCategoriaForm() {
     const [snackOptions, setSnackOptions] = useState({ mensage: "Unknow", type: "error", open: false });
     const navegacao = useNavigate();
 
-    const getCategoria = () => {
+    const getCategoria = useCallback(() => {
         setLoad(true)
         get(`api/categoria/${id}`).then((response) => {
             setItem(response.data)
             setLoad(false)
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
             }));
             setLoad(false)
         });
-    }
+    }, [id])
 
     const editarCategoria = (body) => {
         setLoad(true)
-        put(`api/categoria/${id}`, body).then((response) => {
-            setSnackOptions(prev => ({ 
-                mensage: "Categoria atualizado com Sucesso", 
-                type: "success", 
-                open: true 
+        put(`api/categoria/${id}`, body).then((_) => {
+            setSnackOptions(_ => ({
+                mensage: "Categoria atualizado com Sucesso",
+                type: "success",
+                open: true
             }));
             setLoad(false)
             setTimeout(() => {
                 navegacao('/cadastroCategoria')
-            }, 3000);                
+            }, 3000);
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -60,14 +62,14 @@ export default function CadastroCategoriaForm() {
 
     const criarCategoria = (body) => {
         setLoad(true)
-        post(`api/categoria`, body).then((response) => {
-            setSnackOptions(prev => ({ mensage: "Categoria criado com Sucesso", type: "success", open: true }));
+        post(`api/categoria`, body).then((_) => {
+            setSnackOptions(_ => ({ mensage: "Categoria criado com Sucesso", type: "success", open: true }));
             setLoad(false)
             setTimeout(() => {
                 navegacao('/cadastroCategoria')
-            }, 3000); 
+            }, 3000);
         }).catch((erro) => {
-            setSnackOptions(prev => ({
+            setSnackOptions(_ => ({
                 mensage: erro?.response?.data?.message ? erro.response.data.message : erro?.message ? erro.message : 'Unespected error appears',
                 type: "error",
                 open: true
@@ -81,7 +83,7 @@ export default function CadastroCategoriaForm() {
             getCategoria();
         }
         setImage(item.caminhoImagem)
-    }, [item]);
+    }, [getCategoria, id, item]);
 
     const salvarCategoria = (event) => {
         event.preventDefault();
@@ -106,7 +108,7 @@ export default function CadastroCategoriaForm() {
 
         setImageName(file ? file.name : '');
         const reader = new FileReader();
-            reader.onloadend = () => {
+        reader.onloadend = () => {
             setImage(reader.result);
         };
 
@@ -135,10 +137,10 @@ export default function CadastroCategoriaForm() {
                 <form className='w-full flex flex-col items-center' onSubmit={salvarCategoria}>
                     <Card className="border-solid border-blue-fut-paz-900 border-8 w-2/5 mb-10 ">
                         <CardMedia
-                            style={{transition: 'transform 0.3s', height: '250px', width: '500px'}}
+                            style={{ transition: 'transform 0.3s', height: '250px', width: '500px' }}
                             component="img"
                             image={image}
-                        />  
+                        />
                     </Card>
                     <TextField className='w-3/5'
                         required
@@ -176,7 +178,7 @@ export default function CadastroCategoriaForm() {
                             shrink: true,
                         }}
                     />
-            
+
                     <TextField className='w-3/5'
                         required
                         select
@@ -191,9 +193,9 @@ export default function CadastroCategoriaForm() {
                         <MenuItem value={1}>SIM</MenuItem>
                         <MenuItem value={0}>Não</MenuItem>
                     </TextField>
-    
+
                     <div className='mt-6 self-end p-5'>
-                        <Button type="submit" variant="contained" className='bg-green-600 hover:bg-green-700' 
+                        <Button type="submit" variant="contained" className='bg-green-600 hover:bg-green-700'
                             startIcon={<SaveIcon />}>
                             Salvar
                         </Button>
